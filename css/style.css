@@ -1,0 +1,174 @@
+/* Keep original system cursor visible */
+html, body, button, a {
+    cursor: auto !important;
+}
+button, a, [role="button"] {
+    cursor: pointer !important;
+}
+
+/* Neon Cursor Follower Ring (Pointer-events none so it never blocks clicks) */
+#cursor-follower {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 36px;
+    height: 36px;
+    margin-top: -18px;
+    margin-left: -18px;
+    border-radius: 50%;
+    border: 2px solid #00f0ff;
+    box-shadow: 0 0 15px rgba(0, 240, 255, 0.6), inset 0 0 10px rgba(0, 240, 255, 0.3);
+    pointer-events: none;
+    z-index: 9999;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease, transform 0.15s ease-out;
+    will-change: transform;
+    transform: translate3d(-100px, -100px, 0);
+}
+
+/* State when hovering over interactive elements */
+#cursor-follower.hovered {
+    width: 50px;
+    height: 50px;
+    margin-top: -25px;
+    margin-left: -25px;
+    border-color: #ff4655;
+    background-color: rgba(255, 70, 85, 0.12);
+    box-shadow: 0 0 25px rgba(255, 70, 85, 0.8), inset 0 0 15px rgba(255, 70, 85, 0.4);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: #0a0a0f;
+}
+::-webkit-scrollbar-thumb {
+    background: #1f1f33;
+    border-radius: 4px;
+    border: 1px solid rgba(0, 240, 255, 0.2);
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #ff4655;
+}
+
+/* Glitch Animation */
+.glitch-text {
+    position: relative;
+    display: inline-block;
+}
+.glitch-text::before,
+.glitch-text::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    clip: rect(0, 0, 0, 0);
+}
+.glitch-text:hover::before {
+    left: -2px;
+    text-shadow: 2px 0 #ff4655;
+    animation: glitch-anim-1 2s infinite linear alternate-reverse;
+}
+.glitch-text:hover::after {
+    left: 2px;
+    text-shadow: -2px 0 #00f0ff;
+    animation: glitch-anim-2 3s infinite linear alternate-reverse;
+}
+
+@keyframes glitch-anim-1 {
+    0% { clip: rect(20px, 9999px, 15px, 0); }
+    20% { clip: rect(50px, 9999px, 80px, 0); }
+    40% { clip: rect(10px, 9999px, 40px, 0); }
+    60% { clip: rect(70px, 9999px, 20px, 0); }
+    80% { clip: rect(30px, 9999px, 60px, 0); }
+    100% { clip: rect(90px, 9999px, 10px, 0); }
+}
+@keyframes glitch-anim-2 {
+    0% { clip: rect(10px, 9999px, 60px, 0); }
+    20% { clip: rect(80px, 9999px, 20px, 0); }
+    40% { clip: rect(30px, 9999px, 90px, 0); }
+    60% { clip: rect(50px, 9999px, 10px, 0); }
+    80% { clip: rect(20px, 9999px, 70px, 0); }
+    100% { clip: rect(60px, 9999px, 30px, 0); }
+}
+
+/* Glassmorphism Effect */
+.glass-panel {
+    background: rgba(19, 19, 31, 0.65);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+/* Animated Border Highlight */
+.animated-border {
+    position: relative;
+    border-radius: 1rem;
+    overflow: hidden;
+    transition: transform 0.25s cubic-bezier(0.1, 0.8, 0.3, 1);
+}
+.animated-border::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: conic-gradient(
+        transparent, 
+        transparent, 
+        transparent, 
+        #00f0ff, 
+        #ff4655, 
+        #5865F2
+    );
+    animation: rotate 6s linear infinite;
+    z-index: 0;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+.animated-border:hover::before {
+    opacity: 1;
+}
+.animated-border-content {
+    position: relative;
+    z-index: 1;
+    border-radius: calc(1rem - 1px);
+}
+
+@keyframes rotate {
+    100% { transform: rotate(360deg); }
+}
+
+/* Scanline Overlay */
+.scanlines {
+    background: linear-gradient(
+        rgba(18, 16, 16, 0) 50%, 
+        rgba(0, 0, 0, 0.25) 50%
+    ), linear-gradient(
+        90deg,
+        rgba(255, 0, 0, 0.03),
+        rgba(0, 255, 0, 0.01),
+        rgba(0, 0, 255, 0.03)
+    );
+    background-size: 100% 3px, 6px 100%;
+    pointer-events: none;
+}
+
+/* Music Visualizer Bars */
+.audio-bar {
+    animation: bounce 1.2s ease-in-out infinite alternate;
+}
+.audio-bar:nth-child(1) { animation-delay: 0.1s; }
+.audio-bar:nth-child(2) { animation-delay: 0.3s; }
+.audio-bar:nth-child(3) { animation-delay: 0.2s; }
+.audio-bar:nth-child(4) { animation-delay: 0.4s; }
+
+@keyframes bounce {
+    0% { height: 4px; }
+    100% { height: 18px; }
+}

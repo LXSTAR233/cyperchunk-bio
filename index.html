@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="vi" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Văn Lương - Cyberpunk Bio Links</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Outfit:wght@400;600;700;800;900&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome 6 Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        cyber: {
+                            dark: '#0a0a0f',
+                            card: '#13131f',
+                            red: '#ff4655', // minecraft red
+                            purple: '#5865F2', // Discord Purple
+                            blue: '#00f0ff', // Cyber Blue
+                            green: '#00ff88', // Verified Green
+                            gold: '#ffd700'
+                        }
+                    },
+                    fontFamily: {
+                        outfit: ['Outfit', 'sans-serif'],
+                        mono: ['Space Mono', 'monospace'],
+                        nunito: ['Nunito', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- External CSS (Đã cập nhật đúng đường dẫn thư mục css/) -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-[#0a0a0f] text-gray-100 font-outfit min-h-screen relative overflow-x-hidden select-none">
+
+    <!-- Smooth Neon Follower Ring -->
+    <div id="cursor-follower"></div>
+
+    <!-- Interactive Background Canvas -->
+    <canvas id="cyber-canvas" class="fixed inset-0 w-full h-full pointer-events-none z-0"></canvas>
+    <div class="scanlines fixed inset-0 z-10 opacity-30 pointer-events-none"></div>
+
+    <!-- Cinematic Intro Overlay -->
+    <div id="intro-overlay" class="fixed inset-0 z-50 bg-[#0a0a0f] flex flex-col items-center justify-center p-4 transition-opacity duration-700">
+        <div class="max-w-md w-full text-center space-y-6 relative z-10">
+            <!-- Cyber Graphic Header -->
+            <div class="relative inline-block">
+                <div class="w-24 h-24 mx-auto rounded-full p-1 bg-gradient-to-tr from-cyber-blue via-cyber-red to-cyber-purple animate-pulse">
+                    <img id="intro-avatar" src="./assets/Avatar.png" 
+                         onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1620247407367-b364392d2906?auto=format&fit=crop&w=300&q=80';" 
+                         alt="Intro Avatar" class="w-full h-full object-cover rounded-full border-2 border-cyber-dark">
+                </div>
+                <span class="absolute bottom-0 right-1/3 bg-cyber-dark border border-cyber-green text-cyber-green text-xs px-2 py-0.5 rounded-full font-mono">
+                    <i class="fa-solid fa-circle text-[8px] animate-ping mr-1"></i>ONLINE
+                </span>
+            </div>
+
+            <div class="space-y-2">
+                <h1 class="text-3xl font-mono font-bold tracking-wider text-white glitch-text" data-text="VĂN LƯƠNG">
+                    VĂN LƯƠNG
+                </h1>
+                <p class="text-xs font-mono text-cyber-blue tracking-widest uppercase">
+                    &lt; CLASS 9D1 - THCS BẢN LẦM /&gt;
+                </p>
+            </div>
+
+            <!-- Terminal Matrix Box -->
+            <div class="bg-black/60 border border-cyber-blue/30 rounded-lg p-3 text-left font-mono text-xs text-green-400 space-y-1 h-24 overflow-hidden shadow-inner">
+                <p class="text-gray-500">> Initiating cyber core connection...</p>
+                <p class="text-cyber-blue">> Loading profile: LXSTAR_DEVELOPER</p>
+                <p id="typing-text" class="text-white font-semibold"></p>
+            </div>
+
+            <!-- Enter Button -->
+            <button id="enter-btn" onclick="enterSite()" class="interactive-element group relative inline-flex items-center justify-center px-8 py-3 font-mono font-bold text-white uppercase tracking-wider bg-gradient-to-r from-cyber-red via-cyber-purple to-cyber-blue rounded-xl overflow-hidden shadow-lg shadow-cyber-red/30 transition-all duration-300 hover:scale-105 active:scale-95">
+                <span class="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity"></span>
+                <span class="relative flex items-center gap-2">
+                    <i class="fa-solid fa-power-off"></i> CLICK TO ENTER
+                </span>
+            </button>
+
+            <!-- SKIP Button -->
+            <div class="pt-2">
+                <button onclick="enterSite()" class="interactive-element text-xs font-mono text-gray-500 hover:text-cyber-blue transition-colors underline tracking-widest">
+                    [ SKIP INTRO ]
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Audio Player Bar -->
+    <div class="fixed bottom-4 left-4 z-40">
+        <div class="glass-panel px-4 py-2.5 rounded-2xl flex items-center gap-3 border border-cyber-blue/20 shadow-xl">
+            <button id="play-pause-btn" onclick="toggleAudio()" class="interactive-element w-10 h-10 rounded-xl bg-cyber-card border border-cyber-blue/40 flex items-center justify-center text-cyber-blue hover:text-white hover:bg-cyber-blue/20 transition-all">
+                <i id="music-icon" class="fa-solid fa-play text-sm"></i>
+            </button>
+            <div class="hidden sm:block text-left">
+                <p class="text-xs font-bold text-white tracking-wide">Cyber Chill Lofi</p>
+                <p class="text-[10px] font-mono text-gray-400">LXStar Audio Stream</p>
+            </div>
+            <!-- Visualizer Bars -->
+            <div id="visualizer" class="flex items-end gap-1 h-4 px-1 opacity-40">
+                <span class="audio-bar w-1 bg-cyber-blue rounded-full"></span>
+                <span class="audio-bar w-1 bg-cyber-red rounded-full"></span>
+                <span class="audio-bar w-1 bg-cyber-purple rounded-full"></span>
+                <span class="audio-bar w-1 bg-cyber-green rounded-full"></span>
+            </div>
+        </div>
+    </div>
+    <audio id="bg-music" loop preload="auto">
+        <source src="assets/chill.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Main Content Wrapper -->
+    <div id="main-content" class="relative z-20 min-h-screen opacity-0 transition-opacity duration-1000 py-10 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto flex flex-col justify-between">
+        
+        <!-- Header / Bio Profile Card -->
+        <header class="glass-panel rounded-3xl p-6 sm:p-8 mb-8 relative overflow-hidden text-center sm:text-left flex flex-col sm:flex-row items-center gap-6 border border-white/10 shadow-2xl">
+            <div class="absolute -top-12 -right-12 w-48 h-48 bg-cyber-red/20 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute -bottom-12 -left-12 w-48 h-48 bg-cyber-blue/20 rounded-full blur-3xl pointer-events-none"></div>
+
+            <div class="relative shrink-0">
+                <div class="w-28 h-28 sm:w-32 sm:h-32 rounded-2xl p-1 bg-gradient-to-tr from-cyber-blue via-cyber-purple to-cyber-red shadow-lg shadow-cyber-blue/20">
+                    <img id="main-avatar" src="./assets/Avatar.png" 
+                         onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1620247407367-b364392d2906?auto=format&fit=crop&w=300&q=80';" 
+                         alt="Văn Lương Avatar" class="w-full h-full object-cover rounded-xl">
+                </div>
+                <div class="absolute -bottom-2 -right-2 bg-cyber-dark border border-cyber-green/50 px-2.5 py-1 rounded-lg flex items-center gap-1.5 shadow-md">
+                    <span class="w-2 h-2 rounded-full bg-cyber-green animate-pulse"></span>
+                    <span class="text-[10px] font-mono text-cyber-green font-bold">ONLINE</span>
+                </div>
+            </div>
+
+            <div class="space-y-3 flex-1">
+                <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2">
+                    <h1 class="text-2xl sm:text-3xl font-extrabold text-white tracking-wide">
+                        Văn Lương
+                    </h1>
+                    <span class="inline-flex items-center gap-1 bg-cyber-green/10 border border-cyber-green/30 text-cyber-green text-xs px-2.5 py-0.5 rounded-full font-semibold" title="Tích xanh xác minh">
+                        <i class="fa-solid fa-circle-check text-cyber-green"></i> Verified
+                    </span>
+                </div>
+
+                <p class="text-cyber-blue font-mono text-sm tracking-wide flex items-center justify-center sm:justify-start gap-2">
+                    <i class="fa-solid fa-graduation-cap text-cyber-red"></i>
+                    Học Sinh Lớp 9D1 THCS BẢN LẦM
+                </p>
+
+                <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2 pt-1 font-mono text-xs">
+                    <span class="px-2.5 py-1 rounded-md bg-white/5 border border-white/10 text-gray-300">
+                        <i class="fa-solid fa-code text-cyber-blue mr-1"></i> Developer
+                    </span>
+                    <span class="px-2.5 py-1 rounded-md bg-white/5 border border-white/10 text-gray-300">
+                        <i class="fa-solid fa-gamepad text-cyber-red mr-1"></i> Gamer
+                    </span>
+                    <span class="px-2.5 py-1 rounded-md bg-white/5 border border-white/10 text-gray-300">
+                        <i class="fa-solid fa-cubes text-cyber-gold mr-1"></i> Minecraft
+                    </span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Bento Grid Section -->
+        <main class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10">
+
+            <!-- CARD 1: TikTok Channel -->
+            <a href="https://www.tiktok.com/@van_luong27" target="_blank" rel="noopener noreferrer" 
+               class="interactive-element tilt-card animated-border glass-panel group block p-5 rounded-2xl transition-all duration-300 hover:shadow-2xl hover:shadow-cyber-red/20">
+                <div class="animated-border-content bg-cyber-card/90 p-5 flex items-center justify-between gap-4">
+                    <div class="flex items-center gap-4">
+                        <div class="relative w-14 h-14 rounded-xl overflow-hidden shrink-0 border border-cyber-red/40 bg-black">
+                            <img src="https://p16-sign-sg.tiktokcdn.com/tos-alisg-avt-0068/6b019e6b8d5c478b318b823587458e5d~tplv-tiktokx-cropcenter:1080:1080.jpeg?dr=14579&refresh_token=f8f77826&x-expires=1765220400&x-signature=%2FX%2FqxOSJEw1hiEwjFHn5iFemMJc%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=81f88b70&idc=my3" 
+                                 onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1611605698335-8b1569810432?auto=format&fit=crop&w=150&q=80';"
+                                 alt="TikTok Sub Image" class="w-full h-full object-cover">
+                            <div class="absolute inset-0 bg-cyber-red/10 group-hover:bg-transparent transition-colors"></div>
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <i class="fa-brands fa-tiktok text-cyber-red text-lg"></i>
+                                <h2 class="font-bold text-white text-base group-hover:text-cyber-red transition-colors">TikTok Channel</h2>
+                            </div>
+                            <p class="text-xs text-gray-400 font-mono mt-1">Highlights & Funny Moments</p>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-arrow-up-right-from-square text-gray-500 group-hover:text-cyber-red group-hover:translate-x-1 group-hover:-translate-y-1 transition-all"></i>
+                </div>
+            </a>
+
+            <!-- CARD 2: Personal Profile -->
+            <a href="https://profileluong.netlify.app/" target="_blank" rel="noopener noreferrer" 
+               class="interactive-element tilt-card animated-border glass-panel group block p-5 rounded-2xl transition-all duration-300 hover:shadow-2xl hover:shadow-cyber-blue/20">
+                <div class="animated-border-content bg-cyber-card/90 p-5 flex items-center justify-between gap-4">
+                    <div class="flex items-center gap-4">
+                        <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-cyber-blue/20 to-cyber-purple/30 border border-cyber-blue/40 flex items-center justify-center text-cyber-blue text-2xl shrink-0">
+                            <i class="fa-solid fa-user-astronaut"></i>
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <h2 class="font-bold text-white text-base group-hover:text-cyber-blue transition-colors">My Profile</h2>
+                            </div>
+                            <p class="text-xs text-gray-400 font-mono mt-1">Learn more about me</p>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-arrow-up-right-from-square text-gray-500 group-hover:text-cyber-blue group-hover:translate-x-1 group-hover:-translate-y-1 transition-all"></i>
+                </div>
+            </a>
+
+            <!-- CARD 3: Facebook Profile -->
+            <a href="https://www.facebook.com/profile.php?id=61583255074042" target="_blank" rel="noopener noreferrer" 
+               class="interactive-element tilt-card animated-border glass-panel group block p-5 rounded-2xl transition-all duration-300 hover:shadow-2xl hover:shadow-blue-500/20">
+                <div class="animated-border-content bg-cyber-card/90 p-5 flex items-center justify-between gap-4">
+                    <div class="flex items-center gap-4">
+                        <div class="w-14 h-14 rounded-xl bg-blue-600/20 border border-blue-500/40 flex items-center justify-center text-blue-500 text-2xl shrink-0">
+                            <i class="fa-brands fa-facebook-f"></i>
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <h2 class="font-bold text-white text-base group-hover:text-blue-400 transition-colors">MY Facebook</h2>
+                            </div>
+                            <p class="text-xs text-gray-400 font-mono mt-1">Follow Me On Facebook</p>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-arrow-up-right-from-square text-gray-500 group-hover:text-blue-400 group-hover:translate-x-1 group-hover:-translate-y-1 transition-all"></i>
+                </div>
+            </a>
+
+            <!-- CARD 4: Zalo Group -->
+            <a href="https://zalo.me/g/e2pqu7v6x5hlbjb82zxw" target="_blank" rel="noopener noreferrer" 
+               class="interactive-element tilt-card animated-border glass-panel group block p-5 rounded-2xl transition-all duration-300 hover:shadow-2xl hover:shadow-blue-400/20">
+                <div class="animated-border-content bg-cyber-card/90 p-5 flex items-center justify-between gap-4">
+                    <div class="flex items-center gap-4">
+                        <div class="w-14 h-14 rounded-xl bg-cyan-500/20 border border-cyan-400/40 flex items-center justify-center text-cyan-400 text-2xl shrink-0">
+                            <i class="fa-solid fa-comments"></i>
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <h2 class="font-bold text-white text-base group-hover:text-cyan-300 transition-colors">My Zalo Group</h2>
+                            </div>
+                            <p class="text-xs text-gray-400 font-mono mt-1">Join My Community Group</p>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-users text-gray-500 group-hover:text-cyan-300 transition-all"></i>
+                </div>
+            </a>
+
+            <!-- SECTION TITLE DIVIDER -->
+            <div class="md:col-span-2 pt-4 pb-2 flex items-center gap-4">
+                <div class="h-px bg-gradient-to-r from-transparent via-cyber-red/50 to-transparent flex-1"></div>
+                <span class="font-mono text-xs text-cyber-red tracking-widest uppercase bg-cyber-dark/80 px-4 py-1 rounded-full border border-cyber-red/30 shadow-md">
+                    <i class="fa-solid fa-crosshairs mr-1"></i> LXstarlaucher / tool online
+                </span>
+                <div class="h-px bg-gradient-to-r from-transparent via-cyber-red/50 to-transparent flex-1"></div>
+            </div>
+
+            <!-- CARD 6: Discord Pop-up Trigger -->
+            <button onclick="openDiscordModal()" 
+                    class="interactive-element tilt-card animated-border glass-panel group w-full text-left p-5 rounded-2xl transition-all duration-300 hover:shadow-2xl hover:shadow-cyber-purple/20">
+                <div class="animated-border-content bg-cyber-card/90 p-5 flex items-center justify-between gap-4">
+                    <div class="flex items-center gap-4">
+                        <div class="w-14 h-14 rounded-xl bg-cyber-purple/20 border border-cyber-purple/40 flex items-center justify-center text-cyber-purple text-2xl shrink-0">
+                            <i class="fa-brands fa-discord"></i>
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <h2 class="font-bold text-white text-base group-hover:text-cyber-purple transition-colors">Discord Server</h2>
+                                <span class="bg-cyber-purple/20 text-cyber-purple text-[10px] font-mono px-2 py-0.5 rounded border border-cyber-purple/30">POPUP</span>
+                            </div>
+                            <p class="text-xs text-gray-400 font-mono mt-1">free discord invite</p>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-window-restore text-gray-500 group-hover:text-cyber-purple transition-all"></i>
+                </div>
+            </button>
+
+            <!-- CARD 7: Lxstar Launcher -->
+            <a href="https://lxstarlauncher.netlify.app/" target="_blank" rel="noopener noreferrer" 
+               class="interactive-element tilt-card animated-border glass-panel group block p-5 rounded-2xl transition-all duration-300 hover:shadow-2xl hover:shadow-cyber-gold/20">
+                <div class="animated-border-content bg-cyber-card/90 p-5 flex items-center justify-between gap-4">
+                    <div class="flex items-center gap-4">
+                        <div class="w-14 h-14 rounded-xl bg-amber-500/20 border border-amber-400/40 flex items-center justify-center text-amber-400 text-2xl shrink-0">
+                            <i class="fa-solid fa-cube"></i>
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <h2 class="font-bold text-white text-base group-hover:text-amber-300 transition-colors">Lxstar Launcher</h2>
+                            </div>
+                            <p class="text-xs text-gray-400 font-mono mt-1">Download Launcher For Minecraft</p>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-download text-gray-500 group-hover:text-amber-300 group-hover:translate-y-0.5 transition-all"></i>
+                </div>
+            </a>
+
+            <!-- CARD 8: GitHub Bio Project -->
+            <a href="https://github.com/LXSTAR233/cyperchunk-bio" target="_blank" rel="noopener noreferrer" 
+               class="interactive-element md:col-span-2 tilt-card animated-border glass-panel group block p-5 rounded-2xl transition-all duration-300 hover:shadow-2xl hover:shadow-white/10">
+                <div class="animated-border-content bg-cyber-card/90 p-5 flex items-center justify-between gap-4">
+                    <div class="flex items-center gap-4">
+                        <div class="w-14 h-14 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center text-white text-2xl shrink-0">
+                            <i class="fa-brands fa-github"></i>
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <h2 class="font-bold text-white text-base group-hover:text-cyber-blue transition-colors">My Project Bio Source Code</h2>
+                            </div>
+                            <p class="text-xs text-gray-400 font-mono mt-1">Star or Fork repository on GitHub: github.com/LXSTAR233/Link.bio</p>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-code-fork text-gray-500 group-hover:text-white transition-all"></i>
+                </div>
+            </a>
+
+        </main>
+
+        <!-- Footer -->
+        <footer class="text-center pt-6 border-t border-white/10">
+            <p class="font-mono text-xs text-gray-400 flex items-center justify-center gap-1.5 flex-wrap">
+                <span>Văn Lương</span>
+                <i class="fa-solid fa-circle-check text-cyber-green text-xs" title="Đã xác minh"></i>
+                <span class="text-gray-600">|</span>
+                <span>HS Lớp 9D1 Trường THCS Bản Lầm</span>
+            </p>
+            <p class="font-mono text-[10px] text-gray-600 mt-2">
+                © 2026 LXStar Core System. Designed with Cyberpunk Neon Glass UI.
+            </p>
+        </footer>
+
+    </div>
+
+    <!-- Discord Pop-up Modal -->
+    <div id="discord-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md opacity-0 pointer-events-none transition-all duration-300">
+        <div class="glass-panel w-full max-w-md rounded-3xl border border-cyber-purple/40 p-6 relative bg-cyber-dark/90 shadow-2xl shadow-cyber-purple/20 transform scale-95 transition-all" id="modal-box">
+            
+            <button onclick="closeDiscordModal()" class="interactive-element absolute top-4 right-4 w-8 h-8 rounded-full bg-white/5 border border-white/10 text-gray-400 hover:text-white hover:bg-white/10 flex items-center justify-center transition-all">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="text-center space-y-3 pt-2">
+                <div class="w-20 h-20 rounded-2xl mx-auto bg-cyber-purple/20 border-2 border-cyber-purple flex items-center justify-center text-cyber-purple text-4xl shadow-lg shadow-cyber-purple/30">
+                    <i class="fa-brands fa-discord animate-bounce"></i>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold text-white">MINECRAFT LAUNCHER</h3>
+                    <p class="text-xs font-mono text-cyber-purple">Official Discord Community</p>
+                </div>
+            </div>
+
+            <div class="my-5 p-4 rounded-xl bg-black/40 border border-white/5 space-y-2 text-xs font-mono text-gray-300">
+                <div class="flex items-center justify-between">
+                    <span class="text-gray-400"><i class="fa-solid fa-crown text-cyber-gold mr-1"></i> Owner:</span>
+                    <span class="text-white font-bold">LXSTAR / Văn Lương</span>
+                </div>
+                <div class="flex items-center justify-between">
+                    <span class="text-gray-400"><i class="fa-solid fa-shield-halved text-cyber-blue mr-1"></i> Topic:</span>
+                    <span class="text-cyber-blue">Launcher for minecraft</span>
+                </div>
+                <div class="flex items-center justify-between">
+                    <span class="text-gray-400"><i class="fa-solid fa-circle text-cyber-green text-[10px] mr-1"></i> Status:</span>
+                    <span class="text-cyber-green font-bold">Active Members</span>
+                </div>
+            </div>
+
+            <div class="space-y-2.5">
+                <a href="https://discord.gg/evq3f7cQT" target="_blank" rel="noopener noreferrer" 
+                   class="interactive-element w-full py-3 px-4 rounded-xl bg-cyber-purple hover:bg-cyber-purple/80 text-white font-bold flex items-center justify-center gap-2 transition-all shadow-lg shadow-cyber-purple/30">
+                    <i class="fa-brands fa-discord text-lg"></i> JOIN DISCORD SERVER
+                </a>
+                
+                <button onclick="copyDiscordLink()" class="interactive-element w-full py-2.5 px-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-gray-300 text-xs font-mono flex items-center justify-center gap-2 transition-all">
+                    <i class="fa-regular fa-copy"></i> Copy Invite Link
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed top-5 right-5 z-50 glass-panel border border-cyber-green/40 px-4 py-3 rounded-xl flex items-center gap-3 transform translate-x-full transition-transform duration-300 shadow-xl">
+        <i class="fa-solid fa-circle-check text-cyber-green text-lg"></i>
+        <span id="toast-msg" class="text-xs font-mono text-white">Message here</span>
+    </div>
+
+    <!-- External JavaScript (Đã cập nhật đúng đường dẫn thư mục js/) -->
+    <script src="js/main.js"></script>
+</body>
+</html>
